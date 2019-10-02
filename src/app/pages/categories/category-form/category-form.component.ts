@@ -4,6 +4,9 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {FormGroup, FormBuilder, Validators} from '@angular/forms';
 import { switchMap } from 'rxjs/operators';
+import {MessageService} from 'primeng/api';
+
+
 
 @Component({
   selector: 'app-category-form',
@@ -23,7 +26,8 @@ export class CategoryFormComponent implements OnInit {
     private categoryService: CategoryService,
     private route: ActivatedRoute,
     private router: Router,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private messageService: MessageService
   ) { }
 
   ngOnInit() {
@@ -36,8 +40,46 @@ export class CategoryFormComponent implements OnInit {
     this.setPageTitle();
   }
   
+  submitForm(){
+    this.submitingForm = true;
+    if(this.currentAction == 'new')
+      this.createCategory();
+    else
+      this.updateCategory();
+  }
+  
  
   //private methods
+
+  private updateCategory() {
+    const category = Object.assign(new Category,this.categoryForm.value);
+    this.categoryService.update(category)
+      .subscribe(
+        categoryResponse => {this.actionAfterSuccess(categoryResponse)},
+        error => {this.actionAfterError()}
+      );
+  }
+  
+  private createCategory() {
+    const category = Object.assign(new Category,this.categoryForm.value);
+    this.categoryService.create(category)
+      .subscribe(
+        categoryResponse => {this.actionAfterSuccess(categoryResponse)},
+        error => {this.actionAfterError()}
+      );
+  }
+
+  private actionAfterSuccess(category){
+    this.messageService.add({severity:'success', summary:'Solciitação processada com sucesso !'});
+
+    this.router.navigateByUrl('categories');
+    this.router.navigate(['categories',category.id,'edit']);
+  }
+
+  private actionAfterError() {
+    this.messageService.add({severity:'error', summary:'Ocorreu um erro no servidor, tente novamente mais tarde'});
+  }
+
   private setCurrentAction() {
     if(this.route.snapshot.url[0].path == 'new')
       this.currentAction = 'new';
@@ -64,7 +106,7 @@ export class CategoryFormComponent implements OnInit {
           this.categoryForm.patchValue(category)
         },
         (error) => {
-          alert('Ocorreu um erro no servidor, tente novamente mais tarde');
+          this.messageService.add({severity:'error', summary:'Ocorreu um erro no servidor, tente novamente mais tarde'});
         }
       )
     }
