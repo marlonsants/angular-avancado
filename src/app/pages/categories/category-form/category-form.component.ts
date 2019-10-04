@@ -52,7 +52,7 @@ export class CategoryFormComponent implements OnInit {
   //private methods
 
   private updateCategory() {
-    const category = Object.assign(new Category,this.categoryForm.value);
+    const category = Object.assign(new Category(),this.categoryForm.value);
     this.categoryService.update(category)
       .subscribe(
         categoryResponse => {this.actionAfterSuccess(categoryResponse)},
@@ -61,7 +61,7 @@ export class CategoryFormComponent implements OnInit {
   }
   
   private createCategory() {
-    const category = Object.assign(new Category,this.categoryForm.value);
+    const category = Object.assign(new Category(),this.categoryForm.value);
     this.categoryService.create(category)
       .subscribe(
         categoryResponse => {this.actionAfterSuccess(categoryResponse)},

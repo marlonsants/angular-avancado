@@ -21,6 +21,28 @@ export class EntryFormComponent implements OnInit {
   serverErrorMessages: string[] = null;
   submitingForm: boolean =  false;
   entry: Entry = new Entry();
+  imaskConfig = {
+    mask: Number,
+    scale: 2,
+    thousandsSeparator: '',
+    padFractionalZeros: true,
+    normalizeZeros: true,
+    radix: ','
+  };
+
+  ptBr = {
+    
+    monthNames: ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
+    monthNamesShort: ['Jan','Fev','Mar','Abr','Mai','Jun', 'Jul','Ago','Set','Out','Nov','Dez'],
+    dayNames: ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'],
+    dayNamesShort: ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'],
+    dayNamesMin: ['D','S','T','Q','Q','S','S'],
+    weekHeader: 'Semana',
+    firstDay: 0, 
+    today:'Hoje',
+    clear:'limpar'
+     
+};
 
   constructor(
     private entryService: EntryService,
@@ -32,7 +54,7 @@ export class EntryFormComponent implements OnInit {
 
   ngOnInit() {
     this.setCurrentAction();
-    this.buildCatgoryForm();
+    this.buildEntryForm();
     this.loadEntry();
   }
 
@@ -52,7 +74,8 @@ export class EntryFormComponent implements OnInit {
   //private methods
 
   private updateEntry() {
-    const entry = Object.assign(new Entry,this.entryForm.value);
+    const entry = Object.assign(new Entry(),this.entryForm.value);
+    console.log(entry);
     this.entryService.update(entry)
       .subscribe(
         entryResponse => {this.actionAfterSuccess(entryResponse)},
@@ -61,7 +84,7 @@ export class EntryFormComponent implements OnInit {
   }
   
   private createEntry() {
-    const entry = Object.assign(new Entry,this.entryForm.value);
+    const entry = Object.assign(new Entry(),this.entryForm.value);
     this.entryService.create(entry)
       .subscribe(
         entryResponse => {this.actionAfterSuccess(entryResponse)},
@@ -87,10 +110,12 @@ export class EntryFormComponent implements OnInit {
       this.currentAction = 'edit';
   }
 
-  private buildCatgoryForm() {
+  private buildEntryForm() {
     this.entryForm = this.formBuilder.group({
+      id:[null],
       name: [null, [Validators.required, Validators.minLength(3)]],
       categoryId: [null, [Validators.required]],
+      category:[null],
       paid: [null, [Validators.required]],
       date: [null, [Validators.required]],
       type: [null, [Validators.required]],
@@ -107,7 +132,7 @@ export class EntryFormComponent implements OnInit {
       .subscribe(
         (entry) => {
           this.entry = entry;
-          this.entryForm.patchValue(entry)
+          this.entryForm.patchValue(entry);
         },
         (error) => {
           this.messageService.add({severity:'error', summary:'Ocorreu um erro no servidor, tente novamente mais tarde'});
