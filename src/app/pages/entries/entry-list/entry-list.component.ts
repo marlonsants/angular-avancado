@@ -19,7 +19,7 @@ export class EntryListComponent implements OnInit {
   
   listar(){
     this.entryService.get().subscribe(
-      entries => this.entries = entries,
+      entries => this.entries = entries.sort((a,b) => b.id - a.id) ,
       () => alert("Erro ao listar as categorias")
     )
   }
