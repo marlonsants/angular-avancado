@@ -25,8 +25,7 @@
                 <div class="form-group col-md-2">
                     <label for="type">Tipo</label>
                     <select formControlName="type" type="text" id="type" class="form-control">
-                        <option value="expense">Despesa</option>
-                        <option value="revenue">Receita</option>
+                        <option *ngFor="let option of typeOptions" [value]="option.key">{{option.value}}</option>
                     </select>
                     <div class="alert-danger" *ngIf="entryForm.get('type').invalid && entryForm.get('type').touched ">
                         Campo obrigatório
@@ -45,7 +44,7 @@
                         <div class="input-group-prepend">
                             <div class="input-group-text">R$</div>
                         </div>
-                        <input  formControlName="amount"  id="amount" class="form-control text-right">
+                        <input [imask]="imaskConfig" formControlName="amount"  id="amount" class="form-control text-right">
                     </div>
                     
                 </div>
@@ -53,7 +52,7 @@
                 <!-- Data -->
                 <div class="form-group col-md-2">
                     <label for="date">Data</label>
-                    <p-calendar
+                    <p-calendar formControlName="date"
                     formControlName="date"
                     inputStyleClass="formControl"
                     dataType="string"
@@ -67,7 +66,7 @@
                  <div class="form-group col-md-2 mr-3" >
                     <label for="paid">Pago</label>
                     <div class="btn-group">
-                        <label (click)="entryForm.get('paid').setValue(true)" [class.active]="entryForm.get('paid').value == true" for="pago" class="btn btn-outline-info">
+                        <label  (click)="entryForm.get('paid').setValue(true)" [class.active]="entryForm.get('paid').value == true" for="pago" class="btn btn-outline-info">
                             Pago
                         </label>
 
@@ -77,7 +76,14 @@
                     </div>
                     
                 </div>
-
+                <!-- categoryId -->
+                <div class="form-group col-md-2">
+                    <label for="categoryId"> Categoria</label>
+                    <select class="form-control" formControlName="categoryId">
+                        <option *ngFor="let category of categories" [value]="category.id">{{category.name}}</option>
+                    </select>
+                </div>
+                <!-- Descrição  -->
                 <div class="form-group col-md-7">
                         <label for="description"> Descrição</label>
                         <input formControlName="description" type="text" class="form-control" id="description">
@@ -87,5 +93,8 @@
     </div>
     <button [disabled]="submitingForm || entryForm.invalid" class="btn btn-primary btn-lg float-right mt-3" type="submit">Salvar</button>
 </form>
+
+
+
 
 

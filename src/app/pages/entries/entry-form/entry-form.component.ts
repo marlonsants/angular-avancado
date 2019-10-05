@@ -1,3 +1,4 @@
+import { CategoryService } from './../../categories/shared/category.service';
 import { EntryService } from './../shared/entry.service';
 import { Entry } from './../shared/entry.model';
 import { Component, OnInit } from '@angular/core';
@@ -5,6 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import {FormGroup, FormBuilder, Validators} from '@angular/forms';
 import { switchMap } from 'rxjs/operators';
 import {MessageService} from 'primeng/api';
+import { Category } from '../../categories/shared/category.model';
 
 
 
@@ -21,6 +23,7 @@ export class EntryFormComponent implements OnInit {
   serverErrorMessages: string[] = null;
   submitingForm: boolean =  false;
   entry: Entry = new Entry();
+  categories: Array<Category>;
   imaskConfig = {
     mask: Number,
     scale: 2,
@@ -49,14 +52,17 @@ export class EntryFormComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private formBuilder: FormBuilder,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private categoryService: CategoryService
   ) { }
 
   ngOnInit() {
     this.setCurrentAction();
     this.buildEntryForm();
     this.loadEntry();
+    this.loadCategories();
   }
+  
 
   ngAfterContentChecked(){
     this.setPageTitle();
@@ -69,10 +75,28 @@ export class EntryFormComponent implements OnInit {
     else
       this.updateEntry();
   }
-  
+
+  get typeOptions(): Array<any>{
+    return Object.entries(Entry.types).map(
+      ([key,value]) => {
+        return {
+          key: key,
+          value: value,
+        }  
+      }
+    )
+  }
  
   //private methods
 
+  loadCategories() {
+    this.categoryService.get().subscribe(
+      categories => {
+        this.categories = categories;
+      }
+    )
+  }
+  
   private updateEntry() {
     const entry = Object.assign(new Entry(),this.entryForm.value);
     console.log(entry);
@@ -111,14 +135,15 @@ export class EntryFormComponent implements OnInit {
   }
 
   private buildEntryForm() {
+    
     this.entryForm = this.formBuilder.group({
       id:[null],
       name: [null, [Validators.required, Validators.minLength(3)]],
       categoryId: [null, [Validators.required]],
       category:[null],
-      paid: [null, [Validators.required]],
+      paid: [true, [Validators.required]],
       date: [null, [Validators.required]],
-      type: [null, [Validators.required]],
+      type: ['expense', [Validators.required]],
       description: [null],
       amount: [null, [Validators.required]]
     } )
