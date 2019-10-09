@@ -98,7 +98,7 @@ export class EntryFormComponent implements OnInit {
   }
   
   private updateEntry() {
-    const entry = Object.assign(new Entry(),this.entryForm.value);
+    const entry = Entry.fromJson(this.entryForm.value);
     console.log(entry);
     this.entryService.update(entry)
       .subscribe(
@@ -108,7 +108,7 @@ export class EntryFormComponent implements OnInit {
   }
   
   private createEntry() {
-    const entry = Object.assign(new Entry(),this.entryForm.value);
+    const entry = Entry.fromJson(this.entryForm.value);
     this.entryService.create(entry)
       .subscribe(
         entryResponse => {this.actionAfterSuccess(entryResponse)},
