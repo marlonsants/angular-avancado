@@ -4,7 +4,7 @@ import { Entry } from './../shared/entry.model';
 import { Component, OnInit, Injector } from '@angular/core';
 import {Validators} from '@angular/forms';
 import { Category } from '../../categories/shared/category.model';
-import { BaseResourceFormComponent } from 'src/app/shared/components/base-resource-component/base-resource-form.compnent';
+import { BaseResourceFormComponent } from 'src/app/shared/components/base-resource-form/base-resource-form.compnent';
 
 
 

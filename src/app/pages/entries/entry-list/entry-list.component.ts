@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import {BaseResourceListComponent} from '../../../shared/components/base-resource-list/base-resource-list.component'
 import { Entry } from './../shared/entry.model';
 import { EntryService } from './../shared/entry.service';
 
@@ -7,28 +8,9 @@ import { EntryService } from './../shared/entry.service';
   templateUrl: './entry-list.component.html',
   styleUrls: ['./entry-list.component.css']
 })
-export class EntryListComponent implements OnInit {
+export class EntryListComponent extends BaseResourceListComponent<Entry> {
 
-  entries: Entry[] = [];
-
-  constructor(private entryService: EntryService) { }
-
-  ngOnInit() {
-    this.listar();
-  }
-  
-  listar(){
-    this.entryService.get().subscribe(
-      entries => this.entries = entries.sort((a,b) => b.id - a.id) ,
-      () => alert("Erro ao listar as categorias")
-    )
-  }
-
-  delete(id: number){
-    this.entryService.delete(id).subscribe(
-      () => this.listar(),
-      () => alert("Erro ao excluir a categoria")
-    )
-  }
-
+   constructor(protected entryService: EntryService) {
+      super(entryService);
+   }
 }
