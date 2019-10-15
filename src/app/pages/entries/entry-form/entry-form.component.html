@@ -16,7 +16,7 @@
     </div>
 </div>
 
-<form [formGroup]="entryForm" (submit)="submitForm()">
+<form [formGroup]="resourceForm" (submit)="submitForm()">
     <div class="card">
         <div class="card-header">Informações sobre o lançamento</div>
         <div class="card-body">
@@ -27,7 +27,7 @@
                     <select formControlName="type" type="text" id="type" class="form-control">
                         <option *ngFor="let option of typeOptions" [value]="option.key">{{option.value}}</option>
                     </select>
-                    <div class="alert-danger" *ngIf="entryForm.get('type').invalid && entryForm.get('type').touched ">
+                    <div class="alert-danger" *ngIf="resourceForm.get('type').invalid && resourceForm.get('type').touched ">
                         Campo obrigatório
                     </div>
                 </div>
@@ -66,11 +66,11 @@
                  <div class="form-group col-md-2 mr-3" >
                     <label for="paid">Pago</label>
                     <div class="btn-group">
-                        <label  (click)="entryForm.get('paid').setValue(true)" [class.active]="entryForm.get('paid').value == true" for="pago" class="btn btn-outline-info">
+                        <label  (click)="resourceForm.get('paid').setValue(true)" [class.active]="resourceForm.get('paid').value == true" for="pago" class="btn btn-outline-info">
                             Pago
                         </label>
 
-                        <label (click)="entryForm.get('paid').setValue(false)" [class.active]="entryForm.get('paid').value == false" for="pendente" class="btn btn-outline-info">
+                        <label (click)="resourceForm.get('paid').setValue(false)" [class.active]="resourceForm.get('paid').value == false" for="pendente" class="btn btn-outline-info">
                             Pendente
                         </label>
                     </div>
@@ -91,7 +91,7 @@
             </div>
         </div>
     </div>
-    <button [disabled]="submitingForm || entryForm.invalid" class="btn btn-primary btn-lg float-right mt-3" type="submit">Salvar</button>
+    <button [disabled]="submitingForm || resourceForm.invalid" class="btn btn-primary btn-lg float-right mt-3" type="submit">Salvar</button>
 </form>
 
 

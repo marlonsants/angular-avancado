@@ -1,12 +1,10 @@
 import { CategoryService } from './../../categories/shared/category.service';
 import { EntryService } from './../shared/entry.service';
 import { Entry } from './../shared/entry.model';
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import {FormGroup, FormBuilder, Validators} from '@angular/forms';
-import { switchMap } from 'rxjs/operators';
-import {MessageService} from 'primeng/api';
+import { Component, OnInit, Injector } from '@angular/core';
+import {Validators} from '@angular/forms';
 import { Category } from '../../categories/shared/category.model';
+import { BaseResourceFormComponent } from 'src/app/shared/components/base-resource-component/base-resource-form.compnent';
 
 
 
@@ -15,14 +13,9 @@ import { Category } from '../../categories/shared/category.model';
   templateUrl: './entry-form.component.html',
   styleUrls: ['./entry-form.component.css']
 })
-export class EntryFormComponent implements OnInit {
+export class EntryFormComponent extends BaseResourceFormComponent<Entry> implements OnInit {
 
-  currentAction: string;
-  entryForm: FormGroup;
-  pageTitle: string;
-  serverErrorMessages: string[] = null;
-  submitingForm: boolean =  false;
-  entry: Entry = new Entry();
+  
   categories: Array<Category>;
   imaskConfig = {
     mask: Number,
@@ -48,34 +41,19 @@ export class EntryFormComponent implements OnInit {
 };
 
   constructor(
-    private entryService: EntryService,
-    private route: ActivatedRoute,
-    private router: Router,
-    private formBuilder: FormBuilder,
-    private messageService: MessageService,
+    protected entryService: EntryService,
+    protected injector: Injector,
     private categoryService: CategoryService
-  ) { }
+  ) { 
+    super(entryService,new Entry(),injector,Entry.fromJson);
+  }
 
   ngOnInit() {
-    this.setCurrentAction();
-    this.buildEntryForm();
-    this.loadEntry();
     this.loadCategories();
+    super.ngOnInit();
   }
   
-
-  ngAfterContentChecked(){
-    this.setPageTitle();
-  }
-  
-  submitForm(){
-    this.submitingForm = true;
-    if(this.currentAction == 'new')
-      this.createEntry();
-    else
-      this.updateEntry();
-  }
-
+ 
   get typeOptions(): Array<any>{
     return Object.entries(Entry.types).map(
       ([key,value]) => {
@@ -96,47 +74,11 @@ export class EntryFormComponent implements OnInit {
       }
     )
   }
-  
-  private updateEntry() {
-    const entry = Entry.fromJson(this.entryForm.value);
-    console.log(entry);
-    this.entryService.update(entry)
-      .subscribe(
-        entryResponse => {this.actionAfterSuccess(entryResponse)},
-        error => {this.actionAfterError()}
-      );
-  }
-  
-  private createEntry() {
-    const entry = Entry.fromJson(this.entryForm.value);
-    this.entryService.create(entry)
-      .subscribe(
-        entryResponse => {this.actionAfterSuccess(entryResponse)},
-        error => {this.actionAfterError()}
-      );
-  }
-
-  private actionAfterSuccess(entry){
-    this.messageService.add({severity:'success', summary:'Solciitação processada com sucesso !'});
-
-    this.router.navigateByUrl('entries');
-    this.router.navigate(['entries',entry.id,'edit']);
-  }
-
-  private actionAfterError() {
-    this.messageService.add({severity:'error', summary:'Ocorreu um erro no servidor, tente novamente mais tarde'});
-  }
-
-  private setCurrentAction() {
-    if(this.route.snapshot.url[0].path == 'new')
-      this.currentAction = 'new';
-    else
-      this.currentAction = 'edit';
-  }
-
-  private buildEntryForm() {
     
-    this.entryForm = this.formBuilder.group({
+
+  protected buildResourceForm() : void {
+    
+    this.resourceForm = this.formBuilder.group({
       id:[null],
       name: [null, [Validators.required, Validators.minLength(3)]],
       categoryId: [null, [Validators.required]],
@@ -149,33 +91,11 @@ export class EntryFormComponent implements OnInit {
     } )
   }
 
-  private  loadEntry() {
-    if(this.currentAction == 'edit'){
-      this.route.paramMap.pipe(
-        switchMap(params => this.entryService.getById(+params.get('id')))
-      )
-      .subscribe(
-        (entry) => {
-          this.entry = entry;
-          this.entryForm.patchValue(entry);
-        },
-        (error) => {
-          this.messageService.add({severity:'error', summary:'Ocorreu um erro no servidor, tente novamente mais tarde'});
-        }
-      )
-    }
+  protected setCreationTitle(): string{
+    return 'Cadastrar novo lançamento';
   }
 
-  private setPageTitle() {
-    if(this.currentAction == 'new'){
-      this.pageTitle = "Cadastrar novo lançamento";
-    }
-    else{
-      const entryName = this.entry.name || "";
-      this.pageTitle = `Editando lançamento: ${entryName}`;
-    }
+  protected setEditionTitle(): string{
+    return `Editar lancamento ${this.resource.name}`;
   }
-  
-  
-
 }

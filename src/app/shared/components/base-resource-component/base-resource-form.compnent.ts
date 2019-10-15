@@ -64,21 +64,21 @@ export abstract class BaseResourceFormComponent<T extends BaseResourceModel> imp
   }
   
   private createResource() {
-    const category = this.jsonDataToResourceFn(this.resourceForm.value);
-    this.resourceService.create(category)
+    const resource = this.jsonDataToResourceFn(this.resourceForm.value);
+    this.resourceService.create(resource)
       .subscribe(
         resourceResponse => {this.actionAfterSuccess(resourceResponse)},
         error => {this.actionAfterError()}
       );
   }
 
-  private actionAfterSuccess(category){
+  private actionAfterSuccess(resource){
 
     const componentBasePath: string = this.route.snapshot.parent.url[0].path;
     this.messageService.add({severity:'success', summary:'Solciitação processada com sucesso !'});
 
     this.router.navigateByUrl(componentBasePath);
-    this.router.navigate([componentBasePath,category.id,'edit']);
+    this.router.navigate([componentBasePath,resource.id,'edit']);
   }
 
   private actionAfterError() {
