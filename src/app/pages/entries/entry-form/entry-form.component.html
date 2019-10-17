@@ -1,17 +1,13 @@
 <app-bread-crumb
 [itens]="[{text: 'Lançamentos', link: '/entries'}, {text: pageTitle}]"
 ></app-bread-crumb>
-    
-<div class="row mb-4">
-    <div class="col-md">
-        <h1 class="h2 border-left pl-2">{{pageTitle}}</h1>
-    </div>
-    <div class="col-md">
-        <a class="btn btn-ligth float-right" routerLink="/entries">
-            << Voltar
-        </a>
-    </div>
-</div>
+
+<app-page-header
+button-class="btn-ligth"
+button-text="<< Voltar"
+button-link="/entries"
+[page-title]="pageTitle"
+></app-page-header>
 
 <form [formGroup]="resourceForm" (submit)="submitForm()">
     <div class="card">
