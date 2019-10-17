@@ -20,14 +20,14 @@ button-link="/entries"
                     <select formControlName="type" type="text" id="type" class="form-control">
                         <option *ngFor="let option of typeOptions" [value]="option.key">{{option.value}}</option>
                     </select>
-                    <div class="alert-danger" *ngIf="resourceForm.get('type').invalid && resourceForm.get('type').touched ">
-                        Campo obrigatório
-                    </div>
+                    <app-form-field-error [form-control]="resourceForm.get('type')"></app-form-field-error>
+                    
                 </div>
                 <!-- Lançamento -->
                 <div class="form-group col-md-5">
                     <label for="name">Lançamento</label>
                     <input formControlName="name" type="text" id="name" class="form-control">
+                    <app-form-field-error [form-control]="resourceForm.get('name')"></app-form-field-error>
                 </div>
 
                 <!-- Valor -->
@@ -39,7 +39,7 @@ button-link="/entries"
                         </div>
                         <input [imask]="imaskConfig" formControlName="amount"  id="amount" class="form-control text-right">
                     </div>
-                    
+                    <app-form-field-error [form-control]="resourceForm.get('amount')"></app-form-field-error>    
                 </div>
 
                 <!-- Data -->
@@ -53,6 +53,7 @@ button-link="/entries"
                     [locale]="ptBr"
                     [showButtonBar]="true">
                     </p-calendar>
+                    <app-form-field-error [form-control]="resourceForm.get('date')"></app-form-field-error>    
                 </div>
 
                  <!-- Pago -->
@@ -67,7 +68,7 @@ button-link="/entries"
                             Pendente
                         </label>
                     </div>
-                    
+                    <app-form-field-error [form-control]="resourceForm.get('paid')"></app-form-field-error>       
                 </div>
                 <!-- categoryId -->
                 <div class="form-group col-md-2">
@@ -75,11 +76,13 @@ button-link="/entries"
                     <select class="form-control" formControlName="categoryId">
                         <option *ngFor="let category of categories" [value]="category.id">{{category.name}}</option>
                     </select>
+                    <app-form-field-error [form-control]="resourceForm.get('categoryId')"></app-form-field-error>       
                 </div>
                 <!-- Descrição  -->
                 <div class="form-group col-md-7">
                         <label for="description"> Descrição</label>
                         <input formControlName="description" type="text" class="form-control" id="description">
+                        <app-form-field-error [form-control]="resourceForm.get('description')"></app-form-field-error>       
                 </div>
             </div>
         </div>
